@@ -1,0 +1,231 @@
+Mis 'trucos' favoritos en Python - Parte I
+
+Recientemente, estube ayudando un amigo que estaba en transición de Matlab para el Python. Dándole algunos consejos, me di cuenta de que muchos trucos increíbles que aprendí fueron con alguien que me enseñó en un momento de "lo sabes?" o para resolver un problema bien específico que podria haber sido resuelto de una forma mucho más simples.
+
+En ayudar a ese amigo que está en el otro lado del mundo, me recordé del tiempo que no había nadie que pudiera enseñarme un truque genial, y en realidad, ni siquera sabía que eso me podría existir.
+
+Decidí entonces escribir algunos de mis trucos favoritos, que muchas veces, dejan tu código más simples y legible. Este texto estará entre un 'cheat list' y una publicacíon normal y espero que esto sea útil.
+
+Intercambio de valores entre variables
+Ahora, imagine que tenemos dos variables y queremos contrarrestrar sus valores. Yo quiero que la variable a pase a tener el valor de b y viceversa. Podemos utilizar la lógica siguiente:
+
+a, b = 10, 5
+
+a, b = b, a
+
+Recuperacíon de las informaciones del diccionario
+Diccionarios son estructuras maravillosas y que utilizamos a menudo. Ahora, vamos imaginar que usted recibirá un diccionario de un determinado lugar y tu no estás seguro si una determinada llave estará en el diccionario. Como lo vas hacer? Si intentamos buscar una llave que no existe, tendremos de vuelta un KeyError. Una primera forma intuitiva, sería hacer un try. Por ejemplo:
+
+diccionario = {'Maria': '1235'}
+
+try:
+    valor = diccionario['llave'] 
+except KeyError:
+    valor = None
+
+Parece muy complicado para una cosa tan simples, no? Bueno, los diccionarios tienen un método get que busca una llave y te trae de vuelta None en caso de que la llave no exista:
+
+valor = dicionario.get('llave')
+
+Y lo mejor! Si hay un valor predeterminado, tu puedes agregarlo como un segundo parámetro.
+
+valor = dicionario.get('llave', 123)
+
+# caso la llave no exista:
+>>> valor
+123
+
+Los condicionales son demasiado largos?
+Una situación por la que pasé tambíen fué tener que pasar por ifs donde las verificaciones eran demasiado largas y el código se quedaba raro. Imagine algo como:
+
+if objeto.modelo.atributo['llave'] == 'alguna cosa' and objeto.modelo.otro_atributo['otra_llave'] == 23 and ... :
+    pass
+Lo entendiste... Muchos caracteres para poca verificación. Vamos a un cenário donde tenemos 4 variables que deben ser verificadas en un if. Nuestro código se queda algo como:
+
+a, b, c, d = 1, 2, 3, 4
+
+if a == 1 and b == 2 and c == 3 and d == 4:
+    print('todas las condiciones son verdaderas!')
+En esa ocasión, queremos que todas las condiciones sean verdaderas, correcto? Cada inspector == volverá True o False y, por lo tanto, entraremos en el if solamente si todos son verdaderos.
+
+Vamos hacer un poco diferente: poner todos los condicionales en una lista:
+
+condiciones = [
+    a==1, 
+    b==2, 
+    c==3, 
+    d==4
+]
+Perfecto! Ahora vamos utilizar la maravillosa función all para comprobar si todas las condiciones son verdaderas:
+
+if all(condiciones):
+    print('Todas las condiciones son verdaderas!')
+Listo! Mucho más simples y claro y mucho más fácil de entender lo que está pasando. Genial eh?
+
+Ahora, si queremos que ni todas las condiciones sean verdaderas (o sea, apenas una ser verdadera ya nos sirve), podemos utilizar la función any:
+
+if any(condiciones):
+    print('Alguna de las condiciones era verdadera!')
+
+Para que necesitamos el ‘else’?
+Ese es uno de mis preferidos! Tomemos una función modifica_valor que recibe una entrada y comproba si ella és igual a a, ella regresa 0, si no regresa 1.
+
+def modifica_valor(x):
+    if x == 'a':
+        return 0
+    else:
+        return 1
+En ese caso, else se torna completamente inecesario. Pues si cae en el primer if, ya sale de la función. De esa forma, nuestra función puede ser simplificada para:
+
+def modifica_valor(x):
+    if x == 'a':
+        return 0
+    return 1
+
+Loops de una sola línea
+Ahora, quiero hablar sobre list comprehensions que yo estoy afectuosamente llamando de loops de una sola línea. Ese és un concepto un poco complejo, entonces yo no voy traer una larga exposición sobre todas las posibilidades que existem. Quiero no más que veas que esto és posible, y en muchas veces, útil. Ok?
+
+Vamos a un ejemplo inicial. Tenemos una lista de enteros y nos gustaría criar una nueva lista que tenga esos valores al cuadrado. Lo que podemos hacer és crear una nueva lista (lista_modificada), iterar sobre cada artículo de la primer lista y añadir a la nueva lista el valor al cuadrado. El resultado és exactamente lo que nos gustaría.
+
+lista = [1, 2, 3]
+
+lista_modificada = []
+for x in lista:
+    lista_modificada.append(x**2)
+
+# lista_modificada
+[1, 4, 9]
+Date cuenta que gastamos 3 líneas en un problema relativamente simples. Com list comprehension, nosotros ponemos el for dentro de una nueva lista:
+
+lista = [1, 2, 3]
+
+lista_modificada = [x**2 for x in lista]
+
+# lista_modificada
+[1, 4, 9]
+Lo que hicimos fue basicamente decir: cuadre cada elemento en mi lista. Al hacer eso dentro de una nueva lista, automáticamente decimos que el nuevo elemento al cuadrado debe ser insertado en la lista. Simples y económico. Claro que hay varias formas de hacerlo y potencializar el uso de ese método, pero entendiste la idea general, eso espero!
+
+Funciones de una sola línea
+Del mismo modo que podemos hacer loops en una sola línea, tambíen podemos crear funciones de una sola línea. En python, usemos el lambda para eso. Sin embargo, no se engañe! Ese concepto, para mi, fué mucho más difícil de entender y hasta hoy tengo dificultades en usar lambda cuando las cosas empiezan a quedar muy complicadas. De nuevo, eso és solamente una idea general para que te adentres más.
+
+Trataré de explicar por qué usar el lambda en un ejemplo práctico.
+
+Imaginemos el siguiente guión: tenemos una lista de artículos y queremos transformar estos artículos en valores de 0 o 1.
+
+lista = ['a', 'b', 'b', 'c', 'a', 'b']
+
+lista_modificada = [0, 1, 1, 1, 0, 1]
+Podemos hacer una función que recibe la lista, escanea cada elemento y vuelve 0 o 1 dependiendo del elemento.
+Seria algo como eso:
+
+def modifica_valor(lista):
+    lista_modificada = []
+    for x in lista:
+        if x == 'a':
+            lista_modificada.append(0)
+        else:
+            lista_modificada.append(1)
+Vamos sacar el loop de adentro de la lista de la función. La función quedará responsable solo de devolver el valor 0 o 1 dependiendo del valor del elemento.
+
+def modifica_valor(x):
+    if x == 'a':
+        return 0
+    return 1
+            
+lista_modificada = []
+for x in lista:
+    lista_modificada.append(modifica_valor(x))
+
+Genial, ahora nuestra función quedó bastante simples. Similar a lo que hicimos en el list comprehension podemos representar la misma función de la siguiente forma:
+
+transform = lambda x: 0 if x == 'a' else 1
+
+# type(transform)
+>>> function
+O sea, al recibir un x devuelve 0 si es igual a a o 1 en qualquier otra situación. Eso puede ser usado, por ejemplo, al pasar una función para un map que va aplicar esa función en cada elemento de la lista. Aquel loop con varios append termina convirtiéndose en eso:
+
+lista_transform = list(map(transform, lista))
+
+# lista_transform
+>>> [0, 1, 1, 1, 0, 1]
+Loops también tienen else!
+Una de las cosas que me sorprendió más cuando la aprendi, fué el hecho de que los loops también tienen else. SOn 3 casos que voy usar para ejemplificar el uso:
+
+1. Pasamos una lista vacía
+QUando pasamos una lista vacía para que el loop ocurra, nada pasará, pero el else corre luego en seguida:
+
+lista = []
+
+for x in lista:
+    print('dentro do loop')
+else:
+    print('dentro do else')
+    
+# resultado
+'dentro do else'
+2. Cuando el loop sucede normalmente
+CUando el loop sucede normalmente, és ejecutado de forma normal, y al final, la condicional dentro del else és ejecutada.
+
+lista = [1, 2]
+
+for x in lista:
+    print('dentro do loop')
+else:
+    print('dentro do else')
+    
+# resultado
+'dentro do loop'
+'dentro do loop'
+'dentro do else'
+3. Dejando de ejecutar el else
+Si aplicamos un break adentro del loop, el ciclo sera interrumpido y el código dentro del else no será ejecutado.
+
+lista = [1]
+
+for x in lista:
+    print('dentro do loop')
+    break
+else:
+    print('dentro do else')
+    
+# resultado
+'dentro do loop'
+String comprehension?
+Strings operan muy similares a listas. Eso porquem en realidad, strings son listas de caracteres. Por lo tanto, si hacemos una iteración por una string, el regreso sera cada uno de los caracteres.
+
+palavra = 'hola'
+
+for i in palavra:
+    print(i)
+    
+# resultado
+h
+o
+l
+a
+De esa forma, podemos hacer algo similar a lo que vimos en el list comprehension para hacer las manipulaciones de strings. Por ejemplo, supongamos que usted tenga una string que contiene pontuaciones, y tu quieres eliminarlas. Utilizando esa simples idea, podemos hacer:
+
+frase = 'Que? Yo no quiero oraciones con pontuaciones! Basta!'
+
+frase_sin_pontuacion = ''.join(char for char in frase if char not in [ '!', '?'])
+La diferencia entre el list comprehension y ese “string comprehension” és que el primero necesitamos poner el loop entre las llaves de la lista, mientras ahora usamos el método join de la string vacía ('') para añadir el resultado. Muy bueno, no?
+
+Revisando un tipo
+Si queremos comprobar si una determinada variable és de un determinado tipo, usamos la funci[on type:
+
+>>> type('hola')
+str
+Entonces seria natural pensar que al comprobar una entrada nosotros usaríamos algo como:
+
+type('hola') == str
+Pero tenemos un método mucho más apropiado para harcerlo, que és el isinstance, que comproba si aquella variable és una instancia de una clase determinada.
+
+isinstance('hola', str):
+Bien simples y elegante :)
+
+Adiós!
+Eso és todo por hoy chicos! Espero que lo hayan disfrutado y espero hacer nuevas publicaciones a medida que aprendo más “trucos”!
+
+❤
+Abrazo!
+Leticia
