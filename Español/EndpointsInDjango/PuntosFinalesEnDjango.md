@@ -58,7 +58,7 @@ from restless.preparers import FieldsPreparer
 from .models import Book
 
 class BookResource(DjangoResource):
-    preparer = FieldsPreparer(fields={
+    preparador = FieldsPreparer(fields={
         'book_author': 'author.name',
         'book_title': 'title',
         'book_pages': 'pages',
@@ -76,3 +76,7 @@ urlpatterns = [
     url(r'^books/', include(BookResource.urls())),
 ]
 ```
+
+Bueno, que tenemos aquí? Primero definimos un **preparador**.
+Ese preparador és donde vás a definir quales atributos y propriedades de su instancia iran a nuestra respuesta de la API.
+Las llaves en el diccionario que definiste adentro de tu variable **preparador** puede ser qualquer cosa que quieras que sea (aquí, yo los hice empezar con un **book** para que veas que puede ser qualquier cosa). Los valores en el diccionario, sin embargo, necesitan ser un atributo de la instancia **book**. Si tienes una clave externa (que és el caso del campo **author**), puedes acceder a esos atributos y propriedades en la misma manera que lo harías en el _related manager_.
